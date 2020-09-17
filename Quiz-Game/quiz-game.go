@@ -55,3 +55,12 @@ func playQuizGame(quiz [][]string) int {
 	}
 	return numCorrectAnswers
 }
+
+func main() {
+	quiz, err := readcsv()
+	if err != nil {
+		log.Fatal(err)
+	}
+	numCorrectAnswers := playQuizGame(quiz)
+	fmt.Printf("You scored %d out of %d.\n", numCorrectAnswers, len(quiz))
+}
