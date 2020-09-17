@@ -2,6 +2,7 @@ package game
 
 import (
 	"encoding/csv"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -29,4 +30,20 @@ func readcsv() ([][]string, error) {
 	}
 
 	return quiz, nil
+}
+
+func playQuizGame(quiz [][]string) int {
+	var answer string
+	numCorrectAnswers := 0
+
+	for idx, arr := range quiz {
+		question, correctAnswer := arr[0], arr[1]
+		fmt.Printf("Problem #%d: %s = ", idx+1, question)
+		fmt.Scanln(&answer)
+
+		if answer == correctAnswer {
+			numCorrectAnswers++
+		}
+	}
+	return numCorrectAnswers
 }
