@@ -1,12 +1,20 @@
-package game
+package main
 
 import (
 	"encoding/csv"
+	"flag"
 	"fmt"
 	"io"
 	"log"
 	"os"
 )
+
+func getCommandLineFlags() (*string, *int) {
+	csvFlag := flag.String("csv", "", "a string")
+	limitFlag := flag.Int("limit", 0, "an int")
+	flag.Parse()
+	return csvFlag, limitFlag
+}
 
 func readcsv() ([][]string, error) {
 	f, err := os.Open("C:\\Users\\saddi\\Downloads\\problems.csv")
