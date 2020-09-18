@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 )
 
 type problem struct {
@@ -39,7 +40,7 @@ func parsecsv(csvFile string) ([]problem, error) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		quiz = append(quiz, problem{record[0], record[1]})
+		quiz = append(quiz, problem{question: record[0], answer: strings.TrimSpace(record[1])})
 	}
 
 	return quiz, nil
