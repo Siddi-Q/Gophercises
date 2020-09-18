@@ -9,6 +9,11 @@ import (
 	"os"
 )
 
+type problem struct {
+	question string
+	answer   string
+}
+
 func getCommandLineFlags() (*string, *int) {
 	csvFlag := flag.String("csv", "problems.csv", "a csv file in the format of 'question,answer'")
 	limitFlag := flag.Int("limit", 30, "the time limit for the quiz in seconds")
@@ -16,14 +21,14 @@ func getCommandLineFlags() (*string, *int) {
 	return csvFlag, limitFlag
 }
 
-func parsecsv(csvFile string) ([][]string, error) {
+func parsecsv(csvFile string) ([]problem, error) {
 	f, err := os.Open(csvFile)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
 
-	var quiz [][]string
+	var quiz []problem
 	r := csv.NewReader(f)
 
 	for {
@@ -34,18 +39,18 @@ func parsecsv(csvFile string) ([][]string, error) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		quiz = append(quiz, record)
+		quiz = append(quiz, problem{record[0], record[1]})
 	}
 
 	return quiz, nil
 }
 
-func playQuizGame(quiz [][]string) int {
+func playQuizGame(quiz []problem) int {
 	var answer string
 	numCorrectAnswers := 0
 
-	for idx, arr := range quiz {
-		question, correctAnswer := arr[0], arr[1]
+	for idx, problem := range quiz {
+		question, correctAnswer := problem.question, problem.answer
 		fmt.Printf("Problem #%d: %s = ", idx+1, question)
 		fmt.Scanln(&answer)
 
