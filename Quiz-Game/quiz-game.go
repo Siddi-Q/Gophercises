@@ -16,7 +16,7 @@ func getCommandLineFlags() (*string, *int) {
 	return csvFlag, limitFlag
 }
 
-func readcsv(csvFile string) ([][]string, error) {
+func parsecsv(csvFile string) ([][]string, error) {
 	f, err := os.Open(csvFile)
 	if err != nil {
 		return nil, err
@@ -58,7 +58,7 @@ func playQuizGame(quiz [][]string) int {
 
 func main() {
 	csvFile, _ := getCommandLineFlags()
-	quiz, err := readcsv(*csvFile)
+	quiz, err := parsecsv(*csvFile)
 	if err != nil {
 		log.Fatal(err)
 	}
