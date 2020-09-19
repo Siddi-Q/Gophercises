@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"os"
 	"strings"
 	"time"
@@ -16,11 +17,12 @@ type problem struct {
 	answer   string
 }
 
-func getCommandLineFlags() (*string, *int) {
+func getCommandLineFlags() (*string, *int, *bool) {
 	csvFlag := flag.String("csv", "problems.csv", "a csv file in the format of 'question,answer'")
 	limitFlag := flag.Int("limit", 30, "the time limit for the quiz in seconds")
+	shuffleFlag := flag.Bool("shuffle", false, "set to true inorder to shuffle the quiz problems")
 	flag.Parse()
-	return csvFlag, limitFlag
+	return csvFlag, limitFlag, shuffleFlag
 }
 
 func parsecsv(csvFile string) ([]problem, error) {
@@ -45,6 +47,13 @@ func parsecsv(csvFile string) ([]problem, error) {
 	}
 
 	return quiz, nil
+}
+
+func shuffleQuiz(quiz []problem) {
+	rand.Seed(time.Now().Unix())
+	rand.Shuffle(len(quiz), func(i, j int) {
+		quiz[i], quiz[j] = quiz[j], quiz[i]
+	})
 }
 
 func playQuizGame(quiz []problem, timeLimit int) int {
@@ -76,10 +85,14 @@ func playQuizGame(quiz []problem, timeLimit int) int {
 }
 
 func main() {
-	csvFile, timeLimit := getCommandLineFlags()
+	csvFile, timeLimit, shuffle := getCommandLineFlags()
 	quiz, err := parsecsv(*csvFile)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if *shuffle {
+		shuffleQuiz(quiz)
 	}
 	numCorrectAnswers := playQuizGame(quiz, *timeLimit)
 	fmt.Printf("You scored %d out of %d.\n", numCorrectAnswers, len(quiz))
