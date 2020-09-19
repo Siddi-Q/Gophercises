@@ -57,14 +57,14 @@ func shuffleQuiz(quiz []problem) {
 }
 
 func playQuizGame(quiz []problem, timeLimit int) int {
-	timer := time.NewTimer(time.Duration(timeLimit) * time.Second)
 	numCorrectAnswers := 0
+	answerCh := make(chan string)
+	timer := time.NewTimer(time.Duration(timeLimit) * time.Second)
 
 	for idx, problem := range quiz {
 		question, correctAnswer := problem.question, problem.answer
 		fmt.Printf("Problem #%d: %s = ", idx+1, question)
 
-		answerCh := make(chan string)
 		go func() {
 			var answer string
 			fmt.Scanln(&answer)
