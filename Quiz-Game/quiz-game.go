@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 )
 
 type problem struct {
@@ -46,28 +47,40 @@ func parsecsv(csvFile string) ([]problem, error) {
 	return quiz, nil
 }
 
-func playQuizGame(quiz []problem) int {
-	var answer string
+func playQuizGame(quiz []problem, timeLimit int) int {
+	timer := time.NewTimer(time.Duration(timeLimit) * time.Second)
 	numCorrectAnswers := 0
 
 	for idx, problem := range quiz {
 		question, correctAnswer := problem.question, problem.answer
 		fmt.Printf("Problem #%d: %s = ", idx+1, question)
-		fmt.Scanln(&answer)
 
-		if answer == correctAnswer {
-			numCorrectAnswers++
+		answerCh := make(chan string)
+		go func() {
+			var answer string
+			fmt.Scanln(&answer)
+			answerCh <- answer
+		}()
+
+		select {
+		case <-timer.C:
+			fmt.Println()
+			return numCorrectAnswers
+		case answer := <-answerCh:
+			if answer == correctAnswer {
+				numCorrectAnswers++
+			}
 		}
 	}
 	return numCorrectAnswers
 }
 
 func main() {
-	csvFile, _ := getCommandLineFlags()
+	csvFile, timeLimit := getCommandLineFlags()
 	quiz, err := parsecsv(*csvFile)
 	if err != nil {
 		log.Fatal(err)
 	}
-	numCorrectAnswers := playQuizGame(quiz)
+	numCorrectAnswers := playQuizGame(quiz, *timeLimit)
 	fmt.Printf("You scored %d out of %d.\n", numCorrectAnswers, len(quiz))
 }
