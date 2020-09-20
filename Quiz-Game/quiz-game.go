@@ -76,7 +76,7 @@ func playQuizGame(quiz []problem, timeLimit int) int {
 			fmt.Println()
 			return numCorrectAnswers
 		case answer := <-answerCh:
-			if answer == correctAnswer {
+			if strings.TrimSpace(strings.ToLower(answer)) == strings.ToLower(correctAnswer) {
 				numCorrectAnswers++
 			}
 		}
