@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"encoding/csv"
 	"flag"
 	"fmt"
@@ -58,6 +59,7 @@ func shuffleQuiz(quiz []problem) {
 
 func playQuizGame(quiz []problem, timeLimit int) int {
 	numCorrectAnswers := 0
+	reader := bufio.NewReader(os.Stdin)
 	answerCh := make(chan string)
 	timer := time.NewTimer(time.Duration(timeLimit) * time.Second)
 
@@ -66,8 +68,8 @@ func playQuizGame(quiz []problem, timeLimit int) int {
 		fmt.Printf("Problem #%d: %s = ", idx+1, question)
 
 		go func() {
-			var answer string
-			fmt.Scanln(&answer)
+			answer, _ := reader.ReadString('\n')
+			answer = answer[:len(answer)-2] // Remove \r\n from the user's answer in Windows
 			answerCh <- answer
 		}()
 
