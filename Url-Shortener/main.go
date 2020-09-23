@@ -67,22 +67,32 @@ func MapHandler(pathsToUrls map[string]string, fallback http.Handler) http.Handl
 //   url: https://www.some-url.com/demo
 //
 // The only errors that can be returned are all related to having invalid YAML data.
-//
-//
 func YAMLHandler(yamlBytes []byte, fallback http.Handler) (http.HandlerFunc, error) {
+	pathURLs, err := parseYaml(yamlBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	pathsToUrls := buildMap(pathURLs)
+	return MapHandler(pathsToUrls, fallback), nil
+}
+
+func parseYaml(yamlBytes []byte) ([]pathURL, error) {
 	var pathURLs []pathURL
 	err := yaml.Unmarshal(yamlBytes, &pathURLs)
 
 	if err != nil {
 		return nil, err
 	}
+	return pathURLs, nil
+}
 
+func buildMap(pathURLs []pathURL) map[string]string {
 	pathsToUrls := make(map[string]string)
 	for _, pathURL := range pathURLs {
 		pathsToUrls[pathURL.Path] = pathURL.URL
 	}
-
-	return MapHandler(pathsToUrls, fallback), nil
+	return pathsToUrls
 }
 
 type pathURL struct {
