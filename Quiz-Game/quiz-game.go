@@ -20,7 +20,7 @@ type problem struct {
 
 func getCommandLineFlags() (*string, *int, *bool) {
 	csvFlag := flag.String("csv", "problems.csv", "a csv file in the format of 'question,answer'")
-	limitFlag := flag.Int("limit", 30, "the time limit for the quiz in seconds")
+	limitFlag := flag.Int("limit", 30, "the time limit for the quiz in seconds. set to 0 if you don't want a limit")
 	shuffleFlag := flag.Bool("shuffle", false, "set to true inorder to shuffle the quiz problems")
 	flag.Parse()
 	return csvFlag, limitFlag, shuffleFlag
@@ -55,6 +55,23 @@ func shuffleQuiz(quiz []problem) {
 	rand.Shuffle(len(quiz), func(i, j int) {
 		quiz[i], quiz[j] = quiz[j], quiz[i]
 	})
+}
+
+func playQuizGame(quiz []problem) int {
+	numCorrectAnswers := 0
+	reader := bufio.NewReader(os.Stdin)
+
+	for idx, problem := range quiz {
+		question, correctAnswer := problem.question, problem.answer
+		fmt.Printf("Problem #%d: %s = ", idx+1, question)
+
+		answer, _ := reader.ReadString('\n')
+		answer = answer[:len(answer)-2] // Remove \r\n from the user's answer in Windows
+		if strings.TrimSpace(strings.ToLower(answer)) == strings.ToLower(correctAnswer) {
+			numCorrectAnswers++
+		}
+	}
+	return numCorrectAnswers
 }
 
 func playTimedQuizGame(quiz []problem, timeLimit int) int {
@@ -96,6 +113,12 @@ func main() {
 	if *shuffle {
 		shuffleQuiz(quiz)
 	}
-	numCorrectAnswers := playTimedQuizGame(quiz, *timeLimit)
+
+	var numCorrectAnswers int
+	if *timeLimit == 0 {
+		numCorrectAnswers = playQuizGame(quiz)
+	} else {
+		numCorrectAnswers = playTimedQuizGame(quiz, *timeLimit)
+	}
 	fmt.Printf("You scored %d out of %d.\n", numCorrectAnswers, len(quiz))
 }
