@@ -57,7 +57,7 @@ func shuffleQuiz(quiz []problem) {
 	})
 }
 
-func playQuizGame(quiz []problem, timeLimit int) int {
+func playTimedQuizGame(quiz []problem, timeLimit int) int {
 	numCorrectAnswers := 0
 	reader := bufio.NewReader(os.Stdin)
 	answerCh := make(chan string)
@@ -96,6 +96,6 @@ func main() {
 	if *shuffle {
 		shuffleQuiz(quiz)
 	}
-	numCorrectAnswers := playQuizGame(quiz, *timeLimit)
+	numCorrectAnswers := playTimedQuizGame(quiz, *timeLimit)
 	fmt.Printf("You scored %d out of %d.\n", numCorrectAnswers, len(quiz))
 }
