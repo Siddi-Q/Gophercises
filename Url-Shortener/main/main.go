@@ -19,16 +19,15 @@ func main() {
 	}
 	mapHandler := handler.MapHandler(pathsToUrls, mux)
 
-	yamlFile := getCommandLineFlags()
-	yaml := readYamlFile(*yamlFile)
+	yamlFile, jsonFile := getCommandLineFlags()
+
+	yaml := readFile(*yamlFile)
 	yamlHandler, err := handler.YAMLHandler(yaml, mapHandler)
 	if err != nil {
 		panic(err)
 	}
 
-	json := `
-	[{"path": "/json-golang","url": "https://golang.org/pkg/encoding/json/"},
-	{"path": "/json-goblog","url": "https://blog.golang.org/json"}]`
+	json := readFile(*jsonFile)
 	jsonHandler, err := handler.JSONHandler([]byte(json), yamlHandler)
 	if err != nil {
 		panic(err)
@@ -38,14 +37,15 @@ func main() {
 	http.ListenAndServe(":8080", jsonHandler)
 }
 
-func getCommandLineFlags() *string {
+func getCommandLineFlags() (*string, *string) {
 	yamlFlag := flag.String("yaml", "../pathToUrls.yaml", "a yaml file in the format of\n '- path: /insertPathHere \n    url: https://insertUrlHere'")
+	jsonFlag := flag.String("json", "../pathToUrls.json", "a json file in the format of\n '[{\"path\": \"/inserPathHere\", \"url\": \"https://insertUrlHere\"}]'")
 	flag.Parse()
-	return yamlFlag
+	return yamlFlag, jsonFlag
 }
 
-func readYamlFile(yamlFile string) []byte {
-	f, err := os.Open(yamlFile)
+func readFile(fileName string) []byte {
+	f, err := os.Open(fileName)
 	if err != nil {
 		panic(err)
 	}
