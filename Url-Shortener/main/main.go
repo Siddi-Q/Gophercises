@@ -26,8 +26,16 @@ func main() {
 		panic(err)
 	}
 
+	json := `
+	[{"path": "/json-golang","url": "https://golang.org/pkg/encoding/json/"},
+	{"path": "/json-goblog","url": "https://blog.golang.org/json"}]`
+	jsonHandler, err := handler.JSONHandler([]byte(json), yamlHandler)
+	if err != nil {
+		panic(err)
+	}
+
 	fmt.Println("Starting the server on :8080")
-	http.ListenAndServe(":8080", yamlHandler)
+	http.ListenAndServe(":8080", jsonHandler)
 }
 
 func getCommandLineFlags() *string {
