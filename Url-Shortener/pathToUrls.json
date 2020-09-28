@@ -1,0 +1,10 @@
+[
+    {
+        "path": "/json-golang",
+        "url": "https://golang.org/pkg/encoding/json/"
+    },
+    {
+        "path": "/json-goblog",
+        "url": "https://blog.golang.org/json"
+    }
+]
