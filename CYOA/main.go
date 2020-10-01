@@ -1,7 +1,14 @@
 package main
 
-func main() {
+import "flag"
 
+func main() {
+}
+
+func getCommandLineFlags() *string {
+	jsonFlag := flag.String("file", "gopher.json", "the JSON file with the CYOA story")
+	flag.Parse()
+	return jsonFlag
 }
 
 type story map[string]chapter
