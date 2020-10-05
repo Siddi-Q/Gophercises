@@ -2,7 +2,8 @@ package main
 
 import (
 	"flag"
-	"fmt"
+	"log"
+	"net/http"
 	"os"
 
 	"example.com/story"
@@ -16,7 +17,9 @@ func main() {
 		panic(err)
 	}
 	f.Close()
-	fmt.Printf("%+v", s)
+
+	h := story.NewHandler(s)
+	log.Fatal(http.ListenAndServe(":3000", h))
 }
 
 func getCommandLineFlags() *string {
