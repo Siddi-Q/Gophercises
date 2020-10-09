@@ -19,7 +19,7 @@ func main() {
 	}
 	f.Close()
 
-	h := story.NewHandler(s)
+	h := story.NewHandler(s, nil)
 	fmt.Printf("Starting the server on port: %d\n", *port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), h))
 }

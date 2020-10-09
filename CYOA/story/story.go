@@ -72,10 +72,11 @@ var defaultHTMLTemplate = `
 </html>
 `
 
-var t = template.Must(template.New("").Parse(defaultHTMLTemplate))
+var tpl = template.Must(template.New("").Parse(defaultHTMLTemplate))
 
 type handler struct {
 	s Story
+	t *template.Template
 }
 
 func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -88,7 +89,7 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path = path[1:] // removes the '/' from path
 
 	if chapter, ok := h.s[path]; ok {
-		err := t.Execute(w, chapter)
+		err := tpl.Execute(w, chapter)
 		if err != nil {
 			log.Printf("%v", err)
 			http.Error(w, "Something went wrong...", http.StatusInternalServerError)
@@ -99,8 +100,11 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // NewHandler will
-func NewHandler(s Story) http.Handler {
-	return handler{s}
+func NewHandler(s Story, t *template.Template) http.Handler {
+	if t == nil {
+		t = tpl
+	}
+	return handler{s, t}
 }
 
 // ParseJSONStory will
