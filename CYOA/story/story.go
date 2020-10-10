@@ -99,7 +99,7 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path = path[1:] // removes the '/' from path
 
 	if chapter, ok := h.s[path]; ok {
-		err := tpl.Execute(w, chapter)
+		err := h.t.Execute(w, chapter)
 		if err != nil {
 			log.Printf("%v", err)
 			http.Error(w, "Something went wrong...", http.StatusInternalServerError)
@@ -110,11 +110,12 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // NewHandler will
-func NewHandler(s Story, t *template.Template) http.Handler {
-	if t == nil {
-		t = tpl
+func NewHandler(s Story, options ...HandlerOption) http.Handler {
+	h := handler{s, tpl}
+	for _, option := range options {
+		option(&h)
 	}
-	return handler{s, t}
+	return h
 }
 
 // ParseJSONStory will
