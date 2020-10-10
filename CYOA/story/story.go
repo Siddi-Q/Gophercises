@@ -74,6 +74,16 @@ var defaultHTMLTemplate = `
 
 var tpl = template.Must(template.New("").Parse(defaultHTMLTemplate))
 
+// HandlerOption is
+type HandlerOption func(h *handler)
+
+// WithTemplate is
+func WithTemplate(t *template.Template) HandlerOption {
+	return func(h *handler) {
+		h.t = t
+	}
+}
+
 type handler struct {
 	s Story
 	t *template.Template
