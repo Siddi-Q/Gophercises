@@ -84,6 +84,13 @@ func WithTemplate(t *template.Template) HandlerOption {
 	}
 }
 
+// WithPathFunc is
+func WithPathFunc(fn func(r *http.Request) string) HandlerOption {
+	return func(h *handler) {
+		h.pathFunc = fn
+	}
+}
+
 type handler struct {
 	s        Story
 	t        *template.Template
