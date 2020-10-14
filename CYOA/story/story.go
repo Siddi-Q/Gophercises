@@ -74,17 +74,20 @@ var defaultHTMLTemplate = `
 
 var tpl = template.Must(template.New("").Parse(defaultHTMLTemplate))
 
-// HandlerOption is
+// HandlerOption is used with the NewHandler function to
+// configure the http.Handler.
 type HandlerOption func(h *handler)
 
-// WithTemplate is
+// WithTemplate is an option to provide a custom template to
+// be used when rendering stories.
 func WithTemplate(t *template.Template) HandlerOption {
 	return func(h *handler) {
 		h.t = t
 	}
 }
 
-// WithPathFunc is
+// WithPathFunc is an option to provide a custom function
+// for processing the story chapter from the incoming request.
 func WithPathFunc(fn func(r *http.Request) string) HandlerOption {
 	return func(h *handler) {
 		h.pathFunc = fn
@@ -121,7 +124,11 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Chapter not found.", http.StatusNotFound)
 }
 
-// NewHandler will
+// NewHandler will construct an http.Handler that will render
+// the story provided. The default handler will use the full path
+// (minus the '/' prefix) as the chapter name,
+// defaulting to "intro" if the path is empty. The default template
+// creates option links that follow this pattern.
 func NewHandler(s Story, options ...HandlerOption) http.Handler {
 	h := handler{s, tpl, defaultPathFunc}
 	for _, option := range options {
@@ -130,7 +137,9 @@ func NewHandler(s Story, options ...HandlerOption) http.Handler {
 	return h
 }
 
-// ParseJSONStory will
+// ParseJSONStory will decode a story using the incoming reader
+// and the encoding/json package. It is assumed that the
+// provided reader has the story stored in JSON.
 func ParseJSONStory(r io.Reader) (Story, error) {
 	d := json.NewDecoder(r)
 	var story Story
@@ -140,17 +149,27 @@ func ParseJSONStory(r io.Reader) (Story, error) {
 	return story, nil
 }
 
-// Story represents
+// Story represents a Choose Your Own Adventure story.
+// Each key is the name of a story chapter, and
+// each value is a Chapter.
 type Story map[string]Chapter
 
-// Chapter represents
+// Chapter represents a CYOA story chapter.
+// Each chapter includes its title, the paragraphs it is composed
+// of, and options available for the reader to take at the
+// end of the chapter. If the options are empty it is
+// assumed that you have reached the end of that particular
+// story path.
 type Chapter struct {
 	Title      string   `json:"title"`
 	Paragraphs []string `json:"story"`
 	Options    []Option `json:"options"`
 }
 
-// Option represents
+// Option represents a choice offered at the end of a story chapter.
+// Text is the visible text end users will see,
+// while the Chapter field will be the key to a chapter
+// stored in the Story object this chapter was found in.
 type Option struct {
 	Text    string `json:"text"`
 	Chapter string `json:"arc"`
