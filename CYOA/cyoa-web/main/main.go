@@ -25,7 +25,7 @@ func main() {
 }
 
 func getCommandLineFlags() (*string, *int) {
-	jsonFlag := flag.String("file", "../gopher.json", "the JSON file with the CYOA story")
+	jsonFlag := flag.String("file", "../../gopher.json", "the JSON file with the CYOA story")
 	portFlag := flag.Int("port", 3000, "the port to start the CYOA web application on")
 	flag.Parse()
 	return jsonFlag, portFlag
