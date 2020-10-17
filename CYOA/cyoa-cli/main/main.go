@@ -16,7 +16,8 @@ func main() {
 		panic(err)
 	}
 	f.Close()
-	fmt.Printf("%+v", s)
+
+	play(s)
 }
 
 func getCommandLineFlags() *string {
@@ -31,4 +32,29 @@ func openFile(fileName string) *os.File {
 		panic(err)
 	}
 	return f
+}
+
+func play(s story.Story) {
+	chapterName := "intro"
+
+	for len(s[chapterName].Options) != 0 {
+		fmt.Printf("%v\n", s[chapterName].Title)
+		for _, paragraph := range s[chapterName].Paragraphs {
+			fmt.Printf("%v\n\n", paragraph)
+		}
+
+		for _, option := range s[chapterName].Options {
+			fmt.Printf("%v: %v\n", option.Chapter, option.Text)
+		}
+
+		fmt.Println()
+
+		for idx, option := range s[chapterName].Options {
+			fmt.Printf("Press %v to venture to %v\n", idx+1, option.Chapter)
+		}
+
+		var choice int
+		fmt.Scanf("%d\n", &choice)
+		chapterName = s[chapterName].Options[choice-1].Chapter
+	}
 }
