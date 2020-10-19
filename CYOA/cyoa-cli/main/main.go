@@ -57,4 +57,12 @@ func play(s story.Story) {
 		fmt.Scanf("%d\n", &choice)
 		chapterName = s[chapterName].Options[choice-1].Chapter
 	}
+
+	var playAgain string
+	fmt.Println("Play Again? Enter Y:")
+	fmt.Scanln(&playAgain)
+
+	if playAgain == "Y" || playAgain == "y" {
+		play(s)
+	}
 }
