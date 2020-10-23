@@ -17,11 +17,19 @@ type Link struct {
 // Parse will take an HTML document and will return
 // a slice of links parsed from it.
 func Parse(r io.Reader) ([]Link, error) {
-	_, err := html.Parse(r)
+	doc, err := html.Parse(r)
 	if err != nil {
 		return nil, err
 	}
-	return nil, nil
+
+	linkNodes := getLinkNodes(doc)
+	var links []Link
+
+	for _, linkNode := range linkNodes {
+		links = append(links, buildLink(linkNode))
+	}
+
+	return links, nil
 }
 
 func getLinkNodes(n *html.Node) []*html.Node {
