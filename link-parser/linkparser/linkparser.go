@@ -36,21 +36,25 @@ func getLinkNodes(n *html.Node) []*html.Node {
 	if n.Type == html.ElementNode && n.Data == "a" {
 		return []*html.Node{n}
 	}
+
 	var linkNodes []*html.Node
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
 		linkNodes = append(linkNodes, getLinkNodes(c)...)
 	}
+
 	return linkNodes
 }
 
 func buildLink(n *html.Node) Link {
 	var link Link
+
 	for _, attr := range n.Attr {
 		if attr.Key == "href" {
 			link.Href = attr.Val
 			break
 		}
 	}
+
 	link.Text = getText(n)
 	return link
 }
@@ -66,8 +70,8 @@ func getText(n *html.Node) string {
 
 	var text string
 
-	for c := n.FirstChild; n != nil; c = n.NextSibling {
-		text += getText(c) + " "
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		text += getText(c)
 	}
 
 	return strings.Join(strings.Fields(text), " ")
