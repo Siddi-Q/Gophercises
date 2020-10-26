@@ -32,6 +32,7 @@ func Parse(r io.Reader) ([]Link, error) {
 	return links, nil
 }
 
+// getLinkNodes uses DFS to get all of the link nodes
 func getLinkNodes(n *html.Node) []*html.Node {
 	if n.Type == html.ElementNode && n.Data == "a" {
 		return []*html.Node{n}
