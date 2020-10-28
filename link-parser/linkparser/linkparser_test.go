@@ -19,12 +19,12 @@ func TestParse(t *testing.T) {
 	links, err := Parse(r)
 
 	if len(links) != 1 || err != nil {
-		t.Fatal("Error")
+		t.Fatalf(`Got %d, %v. Want %d, %v.`, len(links), err, 1, nil)
 	}
 
 	wantedLink := Link{Href: "/other-page", Text: "A link to another page"}
 
 	if links[0] != wantedLink {
-		t.Fatal("Error")
+		t.Fatalf(`Got %+v. Want %+v.`, links[0], wantedLink)
 	}
 }
