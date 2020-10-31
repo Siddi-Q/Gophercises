@@ -39,7 +39,7 @@ func getAllLinks(urlStr string) []string {
 		Host:   reqURL.Host,
 	}
 	base := baseURL.String()
-	return getLinks(resp.Body, base)
+	return filter(getLinks(resp.Body, base), withPrefix(base))
 }
 
 func getLinks(r io.Reader, base string) []string {
@@ -67,4 +67,10 @@ func filter(links []string, keepFunc func(string) bool) []string {
 	}
 
 	return result
+}
+
+func withPrefix(prefix string) func(string) bool {
+	return func(link string) bool {
+		return strings.HasPrefix(link, prefix)
+	}
 }
