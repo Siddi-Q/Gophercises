@@ -56,3 +56,15 @@ func getLinks(r io.Reader, base string) []string {
 	}
 	return formattedLinks
 }
+
+func filter(links []string, keepFunc func(string) bool) []string {
+	var result []string
+
+	for _, link := range links {
+		if keepFunc(link) {
+			result = append(result, link)
+		}
+	}
+
+	return result
+}
