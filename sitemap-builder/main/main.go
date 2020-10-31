@@ -14,7 +14,20 @@ import (
 func main() {
 	urlStr := getCommandLineFlags()
 
-	resp, err := http.Get(*urlStr)
+	links := getAllLinks(*urlStr)
+	for _, link := range links {
+		fmt.Println(link)
+	}
+}
+
+func getCommandLineFlags() *string {
+	urlFlag := flag.String("url", "https://gophercises.com", "the url that you want to build a sitemap for")
+	flag.Parse()
+	return urlFlag
+}
+
+func getAllLinks(urlStr string) []string {
+	resp, err := http.Get(urlStr)
 	if err != nil {
 		panic(err)
 	}
@@ -26,18 +39,7 @@ func main() {
 		Host:   reqURL.Host,
 	}
 	base := baseURL.String()
-
-	pages := getLinks(resp.Body, base)
-	for _, page := range pages {
-		fmt.Println(page)
-	}
-
-}
-
-func getCommandLineFlags() *string {
-	urlFlag := flag.String("url", "https://gophercises.com", "the url that you want to build a sitemap for")
-	flag.Parse()
-	return urlFlag
+	return getLinks(resp.Body, base)
 }
 
 func getLinks(r io.Reader, base string) []string {
