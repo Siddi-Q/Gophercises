@@ -106,6 +106,13 @@ func TestParse(t *testing.T) {
 `, 3, nil, []Link{{Href: "#", Text: "Login"},
 			{Href: "/lost", Text: "Lost? Need help?"},
 			{Href: "https://twitter.com/marcusolsson", Text: "@marcusolsson"}}},
+		{`
+<html>
+<body>
+	<a href="/dog-cat">dog cat <!-- commented text SHOULD NOT be included! --></a>
+</body>
+</html>
+`, 1, nil, []Link{{Href: "/dog-cat", Text: "dog cat"}}},
 	}
 
 	for _, test := range tests {
