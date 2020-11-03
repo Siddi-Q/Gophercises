@@ -1,23 +1,33 @@
 package main
 
 import (
+	"encoding/xml"
 	"flag"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 
 	"example.com/linkparser"
 )
 
+const xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9"
+
+type loc struct {
+	Value string `xml:"loc"`
+}
+
+type urlset struct {
+	Urls  []loc  `xml:"url"`
+	Xmlns string `xml:"xmlns,attr"`
+}
+
 func main() {
 	urlStr := getCommandLineFlags()
-	links := bfs(*urlStr)
-
-	for _, link := range links {
-		fmt.Println(link)
-	}
+	pages := bfs(*urlStr)
+	toXML(pages)
 }
 
 func getCommandLineFlags() *string {
@@ -55,7 +65,7 @@ func bfs(urlStr string) []string {
 func getAllLinks(urlStr string) []string {
 	resp, err := http.Get(urlStr)
 	if err != nil {
-		panic(err)
+		return []string{}
 	}
 	defer resp.Body.Close()
 
@@ -99,4 +109,20 @@ func withPrefix(prefix string) func(string) bool {
 	return func(link string) bool {
 		return strings.HasPrefix(link, prefix)
 	}
+}
+
+func toXML(pages []string) {
+	sitemap := urlset{Xmlns: xmlns}
+	for _, page := range pages {
+		sitemap.Urls = append(sitemap.Urls, loc{page})
+	}
+
+	enc := xml.NewEncoder(os.Stdout)
+	enc.Indent("", "  ")
+
+	fmt.Print(xml.Header)
+	if err := enc.Encode(sitemap); err != nil {
+		fmt.Printf("error: %v\n", err)
+	}
+	fmt.Println()
 }
