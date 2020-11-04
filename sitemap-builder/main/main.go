@@ -25,8 +25,8 @@ type urlset struct {
 }
 
 func main() {
-	urlStr, _ := getCommandLineFlags()
-	pages := bfs(*urlStr)
+	urlStr, maxDepth := getCommandLineFlags()
+	pages := bfs(*urlStr, *maxDepth)
 	toXML(pages)
 }
 
@@ -37,13 +37,13 @@ func getCommandLineFlags() (*string, *int) {
 	return urlFlag, maxDepthFlag
 }
 
-func bfs(urlStr string) []string {
+func bfs(urlStr string, maxDepth int) []string {
 	visited := make(map[string]struct{})
 	queue := map[string]struct{}{
 		urlStr: struct{}{},
 	}
 
-	for 0 < len(queue) {
+	for 0 < len(queue) && maxDepth > 0 {
 		nextQueue := make(map[string]struct{})
 		for key := range queue {
 			if _, ok := visited[key]; !ok {
@@ -54,6 +54,7 @@ func bfs(urlStr string) []string {
 			}
 		}
 		queue = nextQueue
+		maxDepth--
 	}
 
 	links := make([]string, 0, len(visited))
