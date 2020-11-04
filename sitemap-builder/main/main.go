@@ -25,15 +25,16 @@ type urlset struct {
 }
 
 func main() {
-	urlStr := getCommandLineFlags()
+	urlStr, _ := getCommandLineFlags()
 	pages := bfs(*urlStr)
 	toXML(pages)
 }
 
-func getCommandLineFlags() *string {
+func getCommandLineFlags() (*string, *int) {
 	urlFlag := flag.String("url", "https://gophercises.com", "the url that you want to build a sitemap for")
+	maxDepthFlag := flag.Int("depth", 10, "the maximum number of links deep to traverse")
 	flag.Parse()
-	return urlFlag
+	return urlFlag, maxDepthFlag
 }
 
 func bfs(urlStr string) []string {
