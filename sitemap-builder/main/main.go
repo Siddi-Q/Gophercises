@@ -26,8 +26,7 @@ type urlset struct {
 
 func main() {
 	urlStr, maxDepth := getCommandLineFlags()
-	pages := bfs(*urlStr, *maxDepth)
-	toXML(pages)
+	buildSitemap(*urlStr, *maxDepth)
 }
 
 func getCommandLineFlags() (*string, *int) {
@@ -35,6 +34,11 @@ func getCommandLineFlags() (*string, *int) {
 	maxDepthFlag := flag.Int("depth", 10, "the maximum number of links deep to traverse")
 	flag.Parse()
 	return urlFlag, maxDepthFlag
+}
+
+func buildSitemap(urlStr string, maxDepth int) {
+	pages := bfs(urlStr, maxDepth)
+	toXML(pages)
 }
 
 func bfs(urlStr string, maxDepth int) []string {
