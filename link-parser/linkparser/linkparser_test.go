@@ -16,6 +16,14 @@ func TestParse(t *testing.T) {
 <html>
 <body>
 	<h1>Hello!</h1>
+	<p>World!</p>
+</body>
+</html>
+`, 0, nil, []Link{}},
+		{`
+<html>
+<body>
+	<h1>Hello!</h1>
 	<a href="/other-page">A link to another page</a>
 </body>
 </html>
