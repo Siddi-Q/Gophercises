@@ -1,16 +1,31 @@
 package db
 
 import (
-	"log"
 	"time"
 
 	"github.com/boltdb/bolt"
 )
 
-func main() {
-	db, err := bolt.Open("my.db", 0600, &bolt.Options{Timeout: 1 * time.Second})
+var taskBucket = []byte("tasks")
+var db *bolt.DB
+
+// Task is
+type Task struct {
+	Key   int
+	Value string
+}
+
+// InitDB will
+func InitDB(dbPath string) error {
+	var err error
+	db, err = bolt.Open(dbPath, 0600, &bolt.Options{Timeout: 1 * time.Second})
+
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
-	defer db.Close()
+
+	return db.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists(taskBucket)
+		return err
+	})
 }
