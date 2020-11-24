@@ -42,12 +42,12 @@ var doCmd = &cobra.Command{
 				}
 
 				task := tasks[id-1]
-				err := db.DeleteTask(task.Key)
+				err := db.DeleteTask(task.ID)
 
 				if err != nil {
 					fmt.Printf("Failed to mark \"%d\" as completed. Error: %s\n", id, err.Error())
 				} else {
-					fmt.Printf("Marked \"%d. %s\" as completed.\n", id, task.Value)
+					fmt.Printf("Marked \"%d. %s\" as completed.\n", id, task.Description)
 				}
 			}
 		}
