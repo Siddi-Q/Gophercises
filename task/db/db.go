@@ -90,6 +90,36 @@ func ReadAllTasks() ([]Task, error) {
 	return tasks, nil
 }
 
+// UpdateTaskCompleted will
+func UpdateTaskCompleted(key int) error {
+	err := db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket(taskBucket)
+		key := itob(key)
+		value := b.Get(key)
+
+		var task Task
+		err := json.Unmarshal(value, &task)
+		if err != nil {
+			return err
+		}
+
+		task.Completed = true
+
+		taskEnc, err := json.Marshal(task)
+		if err != nil {
+			return err
+		}
+
+		return b.Put(key, taskEnc)
+	})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // DeleteTask will
 func DeleteTask(key int) error {
 	return db.Update(func(tx *bolt.Tx) error {
