@@ -44,9 +44,9 @@ var rmCmd = &cobra.Command{
 				err := db.DeleteTask(task.ID)
 
 				if err != nil {
-					fmt.Printf("Failed to mark \"%d\" as completed. Error: %s\n", id, err.Error())
+					fmt.Printf("Failed to delete \"%d\". Error: %s\n", id, err.Error())
 				} else {
-					fmt.Printf("Marked \"%d. %s\" as completed.\n", id, task.Description)
+					fmt.Printf("Deleted \"%d. %s\".\n", id, task.Description)
 				}
 			}
 		}
