@@ -26,9 +26,9 @@ var listCmd = &cobra.Command{
 		case "all":
 			printAllTasks()
 		case "c":
-			printSomeTasks(true)
+			printCompletedTasks()
 		case "nc":
-			printSomeTasks(false)
+			printUncompletedTasks()
 		default:
 			fmt.Println("Unrecognized type. Please try again!")
 		}
@@ -60,31 +60,38 @@ func printAllTasks() {
 	}
 }
 
-func printSomeTasks(completed bool) {
-	tasks, err := db.ReadSomeTasks(completed)
+func printCompletedTasks() {
+	tasks, err := db.ReadSomeTasks(true)
 
 	if err != nil {
 		fmt.Println("Something went wrong:", err.Error())
 		os.Exit(1)
 	}
 
-	if completed {
-		if len(tasks) == 0 {
-			fmt.Println("You have not completed any tasks!")
-		} else {
-			fmt.Println("You have completed the following tasks:")
-			for i, task := range tasks {
-				fmt.Printf("%d. %s\n", i+1, task.Description)
-			}
-		}
+	if len(tasks) == 0 {
+		fmt.Println("You have not completed any tasks!")
 	} else {
-		if len(tasks) == 0 {
-			fmt.Println("You have no tasks to complete!")
-		} else {
-			fmt.Println("You have not completed the following tasks:")
-			for i, task := range tasks {
-				fmt.Printf("%d. %s\n", i+1, task.Description)
-			}
+		fmt.Println("You have completed the following tasks:")
+		for i, task := range tasks {
+			fmt.Printf("%d. %s\n", i+1, task.Description)
+		}
+	}
+}
+
+func printUncompletedTasks() {
+	tasks, err := db.ReadSomeTasks(false)
+
+	if err != nil {
+		fmt.Println("Something went wrong:", err.Error())
+		os.Exit(1)
+	}
+
+	if len(tasks) == 0 {
+		fmt.Println("You have no tasks to complete!")
+	} else {
+		fmt.Println("You have not completed the following tasks:")
+		for i, task := range tasks {
+			fmt.Printf("%d. %s\n", i+1, task.Description)
 		}
 	}
 }
