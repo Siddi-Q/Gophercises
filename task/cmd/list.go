@@ -15,7 +15,7 @@ func init() {
 
 var listCmd = &cobra.Command{
 	Use:   "list",
-	Short: "Lists all of your task",
+	Short: "Lists all of your tasks",
 	Run: func(cmd *cobra.Command, args []string) {
 		tasks, err := db.ReadAllTasks()
 
@@ -29,7 +29,14 @@ var listCmd = &cobra.Command{
 		} else {
 			fmt.Println("You have the following tasks:")
 			for i, task := range tasks {
-				fmt.Printf("%d. %s\n", i+1, task.Description)
+				var status string
+				if task.Completed {
+					status = "Completed"
+				} else {
+					status = "Not Completed"
+				}
+
+				fmt.Printf("%d. %s | %s\n", i+1, task.Description, status)
 			}
 		}
 	},
