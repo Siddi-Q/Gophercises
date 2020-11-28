@@ -87,6 +87,36 @@ func ReadAllTasks() ([]Task, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	return tasks, nil
+}
+
+// ReadSomeTasks will
+func ReadSomeTasks(completed bool) ([]Task, error) {
+	var tasks []Task
+	err := db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(taskBucket)
+		c := b.Cursor()
+
+		for k, v := c.First(); k != nil; k, v = c.Next() {
+			var task *Task
+			err := json.Unmarshal(v, &task)
+
+			if err != nil {
+				return err
+			}
+
+			if task.Completed == completed {
+				tasks = append(tasks, *task)
+			}
+		}
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
 	return tasks, nil
 }
 
