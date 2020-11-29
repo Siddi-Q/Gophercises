@@ -28,7 +28,7 @@ var completedCmd = &cobra.Command{
 		} else {
 			fmt.Println("You have completed the following tasks:")
 			for i, task := range tasks {
-				fmt.Printf("%d. %s\n", i+1, task.Description)
+				fmt.Printf("%d. %s | Completed on %v\n", i+1, task.Description, task.CompletedDate.Format("Monday, January 2, 2006 03:04:05 PM"))
 			}
 		}
 	},
