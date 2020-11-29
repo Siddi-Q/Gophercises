@@ -13,9 +13,10 @@ var db *bolt.DB
 
 // Task is
 type Task struct {
-	ID          int
-	Description string
-	Completed   bool
+	ID            int
+	Description   string
+	Completed     bool
+	CompletedDate time.Time
 }
 
 // InitDB will
@@ -134,6 +135,7 @@ func UpdateTaskCompleted(key int) error {
 		}
 
 		task.Completed = true
+		task.CompletedDate = time.Now()
 
 		taskEnc, err := json.Marshal(task)
 		if err != nil {
