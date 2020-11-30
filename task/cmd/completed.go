@@ -41,3 +41,7 @@ func isSameDay(date1, date2 time.Time) bool {
 
 	return year1 == year2 && month1 == month2 && day1 == day2
 }
+
+func isWithin(date1 time.Time, date2 time.Time, dur time.Duration) bool {
+	return date1.Add(dur).After(date2)
+}
