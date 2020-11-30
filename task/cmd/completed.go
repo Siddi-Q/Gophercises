@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"example.com/db"
 	"github.com/spf13/cobra"
@@ -32,4 +33,11 @@ var completedCmd = &cobra.Command{
 			}
 		}
 	},
+}
+
+func isSameDay(date1, date2 time.Time) bool {
+	year1, month1, day1 := date1.Date()
+	year2, month2, day2 := date2.Date()
+
+	return year1 == year2 && month1 == month2 && day1 == day2
 }
