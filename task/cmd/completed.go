@@ -11,7 +11,10 @@ import (
 
 func init() {
 	RootCmd.AddCommand(completedCmd)
+	completedCmd.Flags().StringVarP(&duration, "duration", "d", "forever", "the time during which the tasks were completed\n forever: all tasks regardless of completed date\n today: all tasks completed today\n 24h: all tasks completed in the last 24 hours\n 12h: all tasks completed in the last 12 hours\n")
 }
+
+var duration string
 
 var completedCmd = &cobra.Command{
 	Use:   "completed",
