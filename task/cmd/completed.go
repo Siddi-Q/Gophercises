@@ -36,9 +36,7 @@ var completedCmd = &cobra.Command{
 				fmt.Println("You have not completed any tasks!")
 			} else {
 				fmt.Println("You have completed the following tasks:")
-				for i, task := range tasks {
-					fmt.Printf("%d. %s | Completed on %v\n", i+1, task.Description, task.CompletedDate.Format("Monday, January 2, 2006 03:04:05 PM"))
-				}
+				outputTasks(tasks)
 			}
 		case "today":
 			var filteredTasks []db.Task
@@ -52,9 +50,7 @@ var completedCmd = &cobra.Command{
 				fmt.Println("You have not completed any tasks today!")
 			} else {
 				fmt.Println("You have completed the following tasks today:")
-				for i, task := range filteredTasks {
-					fmt.Printf("%d. %s | Completed on %v\n", i+1, task.Description, task.CompletedDate.Format("Monday, January 2, 2006 03:04:05 PM"))
-				}
+				outputTasks(filteredTasks)
 			}
 
 		case "24h":
@@ -69,9 +65,7 @@ var completedCmd = &cobra.Command{
 				fmt.Println("You have not completed any tasks in the last 24 hours!")
 			} else {
 				fmt.Println("You have completed the following tasks in the last 24 hours:")
-				for i, task := range filteredTasks {
-					fmt.Printf("%d. %s | Completed on %v\n", i+1, task.Description, task.CompletedDate.Format("Monday, January 2, 2006 03:04:05 PM"))
-				}
+				outputTasks(filteredTasks)
 			}
 		case "12h":
 			var filteredTasks []db.Task
@@ -85,9 +79,7 @@ var completedCmd = &cobra.Command{
 				fmt.Println("You have not completed any tasks in the last 12 hours!")
 			} else {
 				fmt.Println("You have completed the following tasks in the last 12 hours:")
-				for i, task := range filteredTasks {
-					fmt.Printf("%d. %s | Completed on %v\n", i+1, task.Description, task.CompletedDate.Format("Monday, January 2, 2006 03:04:05 PM"))
-				}
+				outputTasks(filteredTasks)
 			}
 		default:
 			fmt.Println("Unrecognized duration. Please try again!")
@@ -104,4 +96,10 @@ func isSameDay(date1, date2 time.Time) bool {
 
 func isWithin(date1 time.Time, date2 time.Time, dur time.Duration) bool {
 	return date1.Add(dur).After(date2)
+}
+
+func outputTasks(tasks []db.Task) {
+	for i, task := range tasks {
+		fmt.Printf("%d. %s | Completed on %v\n", i+1, task.Description, task.CompletedDate.Format("Monday, January 2, 2006 03:04:05 PM"))
+	}
 }
