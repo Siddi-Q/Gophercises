@@ -32,12 +32,7 @@ var completedCmd = &cobra.Command{
 		duration = strings.ToLower(duration)
 		switch duration {
 		case "forever":
-			if len(tasks) == 0 {
-				fmt.Println("You have not completed any tasks!")
-			} else {
-				fmt.Println("You have completed the following tasks:")
-				outputTasks(tasks)
-			}
+			completedCmdOutput("You have not completed any tasks!", "You have completed the following tasks:", tasks)
 		case "today":
 			var filteredTasks []db.Task
 			for _, task := range tasks {
@@ -46,13 +41,7 @@ var completedCmd = &cobra.Command{
 				}
 			}
 
-			if len(filteredTasks) == 0 {
-				fmt.Println("You have not completed any tasks today!")
-			} else {
-				fmt.Println("You have completed the following tasks today:")
-				outputTasks(filteredTasks)
-			}
-
+			completedCmdOutput("You have not completed any tasks today!", "You have completed the following tasks today:", filteredTasks)
 		case "24h":
 			var filteredTasks []db.Task
 			for _, task := range tasks {
@@ -61,12 +50,7 @@ var completedCmd = &cobra.Command{
 				}
 			}
 
-			if len(filteredTasks) == 0 {
-				fmt.Println("You have not completed any tasks in the last 24 hours!")
-			} else {
-				fmt.Println("You have completed the following tasks in the last 24 hours:")
-				outputTasks(filteredTasks)
-			}
+			completedCmdOutput("You have not completed any tasks in the last 24 hours!", "You have completed the following tasks in the last 24 hours:", filteredTasks)
 		case "12h":
 			var filteredTasks []db.Task
 			for _, task := range tasks {
@@ -75,12 +59,7 @@ var completedCmd = &cobra.Command{
 				}
 			}
 
-			if len(filteredTasks) == 0 {
-				fmt.Println("You have not completed any tasks in the last 12 hours!")
-			} else {
-				fmt.Println("You have completed the following tasks in the last 12 hours:")
-				outputTasks(filteredTasks)
-			}
+			completedCmdOutput("You have not completed any tasks in the last 12 hours!", "You have completed the following tasks in the last 12 hours:", filteredTasks)
 		default:
 			fmt.Println("Unrecognized duration. Please try again!")
 		}
@@ -101,5 +80,14 @@ func isWithin(date1 time.Time, date2 time.Time, dur time.Duration) bool {
 func outputTasks(tasks []db.Task) {
 	for i, task := range tasks {
 		fmt.Printf("%d. %s | Completed on %v\n", i+1, task.Description, task.CompletedDate.Format("Monday, January 2, 2006 03:04:05 PM"))
+	}
+}
+
+func completedCmdOutput(noTasksOuputString string, tasksOutputString string, tasks []db.Task) {
+	if len(tasks) == 0 {
+		fmt.Println(noTasksOuputString)
+	} else {
+		fmt.Println(tasksOutputString)
+		outputTasks(tasks)
 	}
 }
