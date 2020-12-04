@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"example.com/db"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -61,7 +62,7 @@ var completedCmd = &cobra.Command{
 
 			completedCmdOutput("You have not completed any tasks in the last 12 hours!", "You have completed the following tasks in the last 12 hours:", filteredTasks)
 		default:
-			fmt.Println("Unrecognized duration. Please try again!")
+			color.New(color.FgRed).Println("Unrecognized duration. Please try again!")
 		}
 	},
 }
@@ -78,14 +79,16 @@ func isWithin(date1 time.Time, date2 time.Time, dur time.Duration) bool {
 }
 
 func outputTasks(tasks []db.Task) {
+	color.Set(color.FgGreen)
 	for i, task := range tasks {
 		fmt.Printf("%d. %s | Completed on %v\n", i+1, task.Description, task.CompletedDate.Format("Monday, January 2, 2006 03:04:05 PM"))
 	}
+	color.Unset()
 }
 
 func completedCmdOutput(noTasksOuputString string, tasksOutputString string, tasks []db.Task) {
 	if len(tasks) == 0 {
-		fmt.Println(noTasksOuputString)
+		color.New(color.FgYellow).Println(noTasksOuputString)
 	} else {
 		fmt.Println(tasksOutputString)
 		outputTasks(tasks)
