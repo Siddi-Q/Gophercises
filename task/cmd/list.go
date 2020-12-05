@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 
 	"example.com/db"
@@ -30,7 +31,7 @@ var listCmd = &cobra.Command{
 		case "nc":
 			printUncompletedTasks()
 		default:
-			fmt.Println("Unrecognized type. Please try again!")
+			color.New(color.FgRed).Println("Unrecognized type. Please try again!")
 		}
 	},
 }
@@ -44,18 +45,15 @@ func printAllTasks() {
 	}
 
 	if len(tasks) == 0 {
-		fmt.Println("You have no tasks to complete!")
+		color.New(color.FgGreen).Println("You have no tasks to complete!")
 	} else {
 		fmt.Println("You have the following tasks:")
 		for i, task := range tasks {
-			var status string
 			if task.Completed {
-				status = "Completed"
+				color.New(color.FgGreen).Printf("%d. %s | %s\n", i+1, task.Description, "Completed")
 			} else {
-				status = "Not Completed"
+				color.New(color.FgRed).Printf("%d. %s | %s\n", i+1, task.Description, "Not Completed")
 			}
-
-			fmt.Printf("%d. %s | %s\n", i+1, task.Description, status)
 		}
 	}
 }
@@ -69,11 +67,11 @@ func printCompletedTasks() {
 	}
 
 	if len(tasks) == 0 {
-		fmt.Println("You have not completed any tasks!")
+		color.New(color.FgYellow).Println("You have not completed any tasks!")
 	} else {
 		fmt.Println("You have completed the following tasks:")
 		for i, task := range tasks {
-			fmt.Printf("%d. %s\n", i+1, task.Description)
+			color.New(color.FgGreen).Printf("%d. %s\n", i+1, task.Description)
 		}
 	}
 }
@@ -87,11 +85,11 @@ func printUncompletedTasks() {
 	}
 
 	if len(tasks) == 0 {
-		fmt.Println("You have no tasks to complete!")
+		color.New(color.FgGreen).Println("You have no tasks to complete!")
 	} else {
 		fmt.Println("You have not completed the following tasks:")
 		for i, task := range tasks {
-			fmt.Printf("%d. %s\n", i+1, task.Description)
+			color.New(color.FgRed).Printf("%d. %s\n", i+1, task.Description)
 		}
 	}
 }
