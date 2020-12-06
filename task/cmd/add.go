@@ -7,6 +7,7 @@ import (
 
 	"example.com/db"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -25,7 +26,7 @@ var addCmd = &cobra.Command{
 			fmt.Println("Something went wrong:", err.Error())
 			os.Exit(1)
 		} else {
-			fmt.Printf("Added \"%s\" to your task list.\n", task)
+			color.New(color.FgGreen).Printf("Added \"%s\" to your task list.\n", task)
 		}
 	},
 }
