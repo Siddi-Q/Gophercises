@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"example.com/db"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -22,7 +23,7 @@ var rmCmd = &cobra.Command{
 		for _, arg := range args {
 			id, err := strconv.Atoi(arg)
 			if err != nil {
-				fmt.Println("Failed to parse the argument:", arg)
+				color.New(color.FgRed).Println("Failed to parse the argument:", arg)
 			} else {
 				ids = append(ids, id)
 			}
@@ -36,7 +37,7 @@ var rmCmd = &cobra.Command{
 		} else {
 			for _, id := range ids {
 				if id <= 0 || id > len(tasks) {
-					fmt.Println("Invalid task number:", id)
+					color.New(color.FgRed).Println("Invalid task number:", id)
 					continue
 				}
 
@@ -46,7 +47,7 @@ var rmCmd = &cobra.Command{
 				if err != nil {
 					fmt.Printf("Failed to delete \"%d\". Error: %s\n", id, err.Error())
 				} else {
-					fmt.Printf("Deleted \"%d. %s\".\n", id, task.Description)
+					color.New(color.FgYellow).Printf("Deleted \"%d. %s\".\n", id, task.Description)
 				}
 			}
 		}
