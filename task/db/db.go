@@ -160,6 +160,13 @@ func DeleteTask(key int) error {
 	})
 }
 
+// DeleteBucket will
+func DeleteBucket() error {
+	return db.Update(func(tx *bolt.Tx) error {
+		return tx.DeleteBucket(taskBucket)
+	})
+}
+
 func itob(v int) []byte {
 	b := make([]byte, 8)
 	binary.BigEndian.PutUint64(b, uint64(v))
