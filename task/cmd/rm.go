@@ -23,6 +23,7 @@ var rmCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if rmAll {
 			db.DeleteBucket()
+			color.New(color.FgYellow).Println("All tasks were deleted.")
 		} else {
 			var ids []int
 
