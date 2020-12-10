@@ -152,6 +152,36 @@ func UpdateTaskCompleted(key int) error {
 	return nil
 }
 
+// UpdateTaskDescription will
+func UpdateTaskDescription(key int, description string) error {
+	err := db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket(taskBucket)
+		key := itob(key)
+		value := b.Get(key)
+
+		var task Task
+		err := json.Unmarshal(value, &task)
+		if err != nil {
+			return err
+		}
+
+		task.Description = description
+
+		taskEnc, err := json.Marshal(task)
+		if err != nil {
+			return nil
+		}
+
+		return b.Put(key, taskEnc)
+	})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // DeleteTask will
 func DeleteTask(key int) error {
 	return db.Update(func(tx *bolt.Tx) error {
