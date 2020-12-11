@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"example.com/db"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -20,7 +21,8 @@ var updateCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		id, err := strconv.Atoi(args[0])
 		if err != nil {
-			fmt.Println("Failed to parse the argument:", args[0])
+			color.New(color.FgRed).Println("Failed to parse the argument:", args[0])
+			os.Exit(1)
 		}
 
 		description := strings.Join(args[1:], " ")
@@ -32,7 +34,7 @@ var updateCmd = &cobra.Command{
 			os.Exit(1)
 		} else {
 			if id <= 0 || id > len(tasks) {
-				fmt.Println("Invalid task number:", id)
+				color.New(color.FgRed).Println("Invalid task number:", id)
 			} else {
 				task := tasks[id-1]
 				err := db.UpdateTaskDescription(task.ID, description)
@@ -40,7 +42,7 @@ var updateCmd = &cobra.Command{
 				if err != nil {
 					fmt.Printf("Failed to update \"%d. %s\". Error: %s\n", id, task.Description, err.Error())
 				} else {
-					fmt.Printf("Updated task's description from \"%d. %s\" to \"%d. %s\".\n", id, task.Description, id, description)
+					color.New(color.FgGreen).Printf("Updated task's description from \"%d. %s\" to \"%d. %s\".\n", id, task.Description, id, description)
 				}
 			}
 		}
