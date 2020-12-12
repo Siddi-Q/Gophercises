@@ -11,7 +11,7 @@ import (
 var taskBucket = []byte("tasks")
 var db *bolt.DB
 
-// Task is
+// Task represents a user's task.
 type Task struct {
 	ID            int
 	Description   string
@@ -19,7 +19,7 @@ type Task struct {
 	CompletedDate time.Time
 }
 
-// InitDB will
+// InitDB will take a path and initialize a boltdb at that path.
 func InitDB(dbPath string) error {
 	var err error
 	db, err = bolt.Open(dbPath, 0600, &bolt.Options{Timeout: 1 * time.Second})
