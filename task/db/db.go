@@ -19,7 +19,7 @@ type Task struct {
 	CompletedDate time.Time
 }
 
-// InitDB will take a path and initialize a boltdb at that path.
+// InitDB takes a path and initializes a boltdb at that path.
 func InitDB(dbPath string) error {
 	var err error
 	db, err = bolt.Open(dbPath, 0600, &bolt.Options{Timeout: 1 * time.Second})
@@ -34,8 +34,8 @@ func InitDB(dbPath string) error {
 	})
 }
 
-// CreateTask will
-func CreateTask(task string) (int, error) {
+// CreateTask takes a task description, creates a task struct and inserts it into the database.
+func CreateTask(description string) (int, error) {
 	var id int
 	err := db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket(taskBucket)
@@ -45,7 +45,7 @@ func CreateTask(task string) (int, error) {
 
 		task := &Task{
 			ID:          id,
-			Description: task,
+			Description: description,
 			Completed:   false,
 		}
 
