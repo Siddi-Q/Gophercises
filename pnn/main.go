@@ -29,7 +29,7 @@ func main() {
 	must(err)
 	defer db.Close()
 
-	must(db.Ping())
+	must(createPhoneNumbersTable(db))
 }
 
 func must(err error) {
@@ -52,6 +52,16 @@ func createDB(db *sql.DB, dbName string) error {
 		return err
 	}
 	return nil
+}
+
+func createPhoneNumbersTable(db *sql.DB) error {
+	sqlStatement := `
+		CREATE TABLE IF NOT EXISTS phone_numbers (
+			id SERIAL,
+			value VARCHAR(255)
+		)`
+	_, err := db.Exec(sqlStatement)
+	return err
 }
 
 func normalizePhoneNumber(pn string) string {
