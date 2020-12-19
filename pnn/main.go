@@ -30,6 +30,9 @@ func main() {
 	defer db.Close()
 
 	must(createPhoneNumbersTable(db))
+	id, err := insertPhoneNumber(db, "1234567890")
+	must(err)
+	fmt.Printf("id = %d", id)
 }
 
 func must(err error) {
@@ -62,6 +65,16 @@ func createPhoneNumbersTable(db *sql.DB) error {
 		)`
 	_, err := db.Exec(sqlStatement)
 	return err
+}
+
+func insertPhoneNumber(db *sql.DB, phoneNumber string) (int, error) {
+	sqlStatement := `INSERT INTO phone_numbers (value) VALUES ($1) RETURNING id`
+	var id int
+	err := db.QueryRow(sqlStatement, phoneNumber).Scan(&id)
+	if err != nil {
+		return -1, err
+	}
+	return id, nil
 }
 
 func normalizePhoneNumber(pn string) string {
