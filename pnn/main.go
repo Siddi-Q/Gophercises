@@ -33,10 +33,19 @@ func main() {
 	id, err := insertPhoneNumber(db, "1234567890")
 	must(err)
 	fmt.Printf("id = %d\n", id)
+	id, err = insertPhoneNumber(db, "2345678901")
+	must(err)
+	fmt.Printf("id = %d\n", id)
 
 	phoneNumber, err := getPhoneNumber(db, id)
 	must(err)
 	fmt.Printf("phone number = %s\n", phoneNumber)
+
+	phoneNumbers, err := getAllPhoneNumbers(db)
+	must(err)
+	for _, pn := range phoneNumbers {
+		fmt.Printf("%+v\n", pn)
+	}
 }
 
 func must(err error) {
@@ -89,6 +98,35 @@ func getPhoneNumber(db *sql.DB, id int) (string, error) {
 		return "", err
 	}
 	return phoneNumber, nil
+}
+
+type phoneNumber struct {
+	id     int
+	number string
+}
+
+func getAllPhoneNumbers(db *sql.DB) ([]phoneNumber, error) {
+	sqlStatement := `SELECT id, value FROM phone_numbers`
+	rows, err := db.Query(sqlStatement)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var phoneNumbers []phoneNumber
+	for rows.Next() {
+		var pn phoneNumber
+		if err := rows.Scan(&pn.id, &pn.number); err != nil {
+			return nil, err
+		}
+		phoneNumbers = append(phoneNumbers, pn)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return phoneNumbers, nil
 }
 
 func normalizePhoneNumber(pn string) string {
