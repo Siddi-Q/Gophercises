@@ -32,7 +32,11 @@ func main() {
 	must(createPhoneNumbersTable(db))
 	id, err := insertPhoneNumber(db, "1234567890")
 	must(err)
-	fmt.Printf("id = %d", id)
+	fmt.Printf("id = %d\n", id)
+
+	phoneNumber, err := getPhoneNumber(db, id)
+	must(err)
+	fmt.Printf("phone number = %s\n", phoneNumber)
 }
 
 func must(err error) {
@@ -75,6 +79,16 @@ func insertPhoneNumber(db *sql.DB, phoneNumber string) (int, error) {
 		return -1, err
 	}
 	return id, nil
+}
+
+func getPhoneNumber(db *sql.DB, id int) (string, error) {
+	sqlStatement := `SELECT value FROM phone_numbers WHERE id=$1`
+	var phoneNumber string
+	err := db.QueryRow(sqlStatement, id).Scan(&phoneNumber)
+	if err != nil {
+		return "", err
+	}
+	return phoneNumber, nil
 }
 
 func normalizePhoneNumber(pn string) string {
