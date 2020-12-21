@@ -57,6 +57,8 @@ func main() {
 	number, err = getPhoneNumber(db, pn2.id)
 	must(err)
 	fmt.Printf("phone number = %s\n", number)
+
+	deletePhoneNumber(db, pn2.id)
 }
 
 func must(err error) {
@@ -156,6 +158,12 @@ func findPhoneNumber(db *sql.DB, number string) (*phoneNumber, error) {
 func updatePhoneNumber(db *sql.DB, pn phoneNumber) error {
 	sqlStatement := `UPDATE phone_numbers SET value=$2 WHERE id=$1`
 	_, err := db.Exec(sqlStatement, pn.id, pn.number)
+	return err
+}
+
+func deletePhoneNumber(db *sql.DB, id int) error {
+	sqlStatement := `DELETE FROM phone_numbers WHERE id=$1`
+	_, err := db.Exec(sqlStatement, id)
 	return err
 }
 
