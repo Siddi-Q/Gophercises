@@ -46,6 +46,10 @@ func main() {
 	for _, pn := range phoneNumbers {
 		fmt.Printf("%+v\n", pn)
 	}
+
+	pn, err := findPhoneNumber(db, "1234567890")
+	must(err)
+	fmt.Printf("%+v\n", pn)
 }
 
 func must(err error) {
@@ -127,6 +131,19 @@ func getAllPhoneNumbers(db *sql.DB) ([]phoneNumber, error) {
 	}
 
 	return phoneNumbers, nil
+}
+
+func findPhoneNumber(db *sql.DB, number string) (*phoneNumber, error) {
+	sqlStatement := `SELECT id, value FROM phone_numbers WHERE value=$1`
+	var pn phoneNumber
+	err := db.QueryRow(sqlStatement, number).Scan(&pn.id, &pn.number)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &pn, nil
 }
 
 func normalizePhoneNumber(pn string) string {
