@@ -37,9 +37,9 @@ func main() {
 	must(err)
 	fmt.Printf("id = %d\n", id)
 
-	phoneNumber, err := getPhoneNumber(db, id)
+	number, err := getPhoneNumber(db, id)
 	must(err)
-	fmt.Printf("phone number = %s\n", phoneNumber)
+	fmt.Printf("phone number = %s\n", number)
 
 	phoneNumbers, err := getAllPhoneNumbers(db)
 	must(err)
@@ -49,7 +49,14 @@ func main() {
 
 	pn, err := findPhoneNumber(db, "1234567890")
 	must(err)
-	fmt.Printf("%+v\n", pn)
+	fmt.Printf("%+v\n", *pn)
+
+	pn2 := phoneNumber{1, "111111111"}
+	updatePhoneNumber(db, pn2)
+
+	number, err = getPhoneNumber(db, pn2.id)
+	must(err)
+	fmt.Printf("phone number = %s\n", number)
 }
 
 func must(err error) {
@@ -144,6 +151,12 @@ func findPhoneNumber(db *sql.DB, number string) (*phoneNumber, error) {
 		return nil, err
 	}
 	return &pn, nil
+}
+
+func updatePhoneNumber(db *sql.DB, pn phoneNumber) error {
+	sqlStatement := `UPDATE phone_numbers SET value=$2 WHERE id=$1`
+	_, err := db.Exec(sqlStatement, pn.id, pn.number)
+	return err
 }
 
 func normalizePhoneNumber(pn string) string {
