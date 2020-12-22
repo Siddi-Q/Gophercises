@@ -65,7 +65,7 @@ func CreateTask(description string) (int, error) {
 	return id, nil
 }
 
-// ReadAllTasks will
+// ReadAllTasks returns all tasks in the database.
 func ReadAllTasks() ([]Task, error) {
 	var tasks []Task
 	err := db.View(func(tx *bolt.Tx) error {
