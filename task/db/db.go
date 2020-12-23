@@ -92,7 +92,7 @@ func ReadAllTasks() ([]Task, error) {
 	return tasks, nil
 }
 
-// ReadSomeTasks will
+// ReadSomeTasks returns a list of tasks based on whether the tasks are completed or not.
 func ReadSomeTasks(completed bool) ([]Task, error) {
 	var tasks []Task
 	err := db.View(func(tx *bolt.Tx) error {
