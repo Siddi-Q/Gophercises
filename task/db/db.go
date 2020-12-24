@@ -121,7 +121,7 @@ func ReadSomeTasks(completed bool) ([]Task, error) {
 	return tasks, nil
 }
 
-// UpdateTaskCompleted will
+// UpdateTaskCompleted marks a specific task as completed.
 func UpdateTaskCompleted(key int) error {
 	err := db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket(taskBucket)
