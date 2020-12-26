@@ -152,7 +152,7 @@ func UpdateTaskCompleted(key int) error {
 	return nil
 }
 
-// UpdateTaskDescription will
+// UpdateTaskDescription updates a specific task's description.
 func UpdateTaskDescription(key int, description string) error {
 	err := db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket(taskBucket)
