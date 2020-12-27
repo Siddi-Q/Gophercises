@@ -190,7 +190,8 @@ func DeleteTask(key int) error {
 	})
 }
 
-// DeleteBucket will
+// DeleteBucket deletes the task bucket in the database.
+// As a result, all taaks are deleted.
 func DeleteBucket() error {
 	return db.Update(func(tx *bolt.Tx) error {
 		return tx.DeleteBucket(taskBucket)
