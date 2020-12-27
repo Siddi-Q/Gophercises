@@ -182,7 +182,7 @@ func UpdateTaskDescription(key int, description string) error {
 	return nil
 }
 
-// DeleteTask will
+// DeleteTask deletes a specific task from the database.
 func DeleteTask(key int) error {
 	return db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket(taskBucket)
